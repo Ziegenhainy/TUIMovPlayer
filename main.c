@@ -9,7 +9,7 @@
 
 void timespec_diff(struct timespec* timespec1, struct timespec* timespec2) {
     timespec1->tv_nsec = timespec1->tv_nsec - timespec2->tv_nsec;
-    if (timespec1->tv_nsec < timespec2->tv_nsec) {
+    if (timespec1->tv_nsec < 0) {
         timespec1->tv_nsec += ONE_BILLION;
         timespec1->tv_sec--;
     }
