@@ -1,0 +1,1 @@
+gcc main.c -o3 -o build/tuimovplayer && ./build/tuimovplayer build/test.tuimov

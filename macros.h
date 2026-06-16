@@ -1,0 +1,3 @@
+#define CLEAR_SCREEN "\ec"
+#define CURSOR_INVISIBLE "\e[?25l"
+#define ONE_BILLION 1000000000
