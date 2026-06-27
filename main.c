@@ -7,6 +7,16 @@
 #include <time.h>
 #include <string.h>
 
+void timespec_add(struct timespec* timespec1, struct timespec* timespec2) {
+    timespec1->tv_nsec = timespec1->tv_nsec + timespec2->tv_nsec;
+    if (timespec1->tv_nsec > ONE_BILLION) {
+        timespec1->tv_nsec -= ONE_BILLION;
+        timespec1->tv_sec++;
+    }
+
+    timespec1->tv_sec = timespec1->tv_sec + timespec2->tv_sec;
+}
+
 void timespec_diff(struct timespec* timespec1, struct timespec* timespec2) {
     timespec1->tv_nsec = timespec1->tv_nsec - timespec2->tv_nsec;
     if (timespec1->tv_nsec < 0) {
@@ -14,7 +24,7 @@ void timespec_diff(struct timespec* timespec1, struct timespec* timespec2) {
         timespec1->tv_sec--;
     }
 
-    timespec1->tv_sec = timespec1->tv_sec-timespec2->tv_sec;
+    timespec1->tv_sec = timespec1->tv_sec - timespec2->tv_sec;
 }
 
 int main(int argc, char** argv) {
@@ -32,7 +42,7 @@ int main(int argc, char** argv) {
         puts("Could not open tuimov File!");
         return EXIT_FAILURE;
     }
-
+    
     int c;
     bool read_sleep = false;
 
@@ -40,9 +50,8 @@ int main(int argc, char** argv) {
     unsigned char nanos_buf[8] = {0};
     
     size_t read_iter = 0;
-    struct timespec sleep_time, frame_start, frame_end;
-
-    timespec_get(&frame_start, TIME_UTC);
+    struct timespec sleep_time, current_time, next_time;
+    timespec_get(&next_time, TIME_UTC);
     printf(CLEAR_SCREEN CURSOR_INVISIBLE);
 
     while((c = fgetc(tui_file)) != EOF) {
@@ -59,11 +68,11 @@ int main(int argc, char** argv) {
                 memcpy(&sleep_time.tv_nsec, nanos_buf, sizeof(__syscall_slong_t));
                 read_sleep = false;
                 read_iter = 0;
-                timespec_get(&frame_end, TIME_UTC);
-                timespec_diff(&frame_end, &frame_start);
-                timespec_diff(&sleep_time, &frame_end);
+                timespec_add(&next_time, &sleep_time);
+                sleep_time = next_time;
+                timespec_get(&current_time, TIME_UTC);
+                timespec_diff(&sleep_time, &current_time);
                 thrd_sleep(&sleep_time, NULL);
-                timespec_get(&frame_start, TIME_UTC);
             }
             
         } else {
