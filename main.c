@@ -52,8 +52,7 @@ int main(int argc, char** argv) {
     size_t read_iter = 0;
     struct timespec sleep_time, current_time, next_time;
     timespec_get(&next_time, TIME_UTC);
-    printf(CLEAR_SCREEN CURSOR_INVISIBLE);
-
+    printf(CURSOR_INVISIBLE CLEAR_SCREEN);
     while((c = fgetc(tui_file)) != EOF) {
         if (read_sleep) {
             if (read_iter < 4) {
