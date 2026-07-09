@@ -33,6 +33,12 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
+    bool do_loop = false;
+
+    if (argc >= 3) {
+        if (strcmp("-l", argv[2]) == 0) do_loop = true;
+    }
+
     int exit_code = EXIT_FAILURE;
 
     char* tui_file_path = argv[1];
@@ -54,7 +60,14 @@ int main(int argc, char** argv) {
     timespec_get(&next_time, TIME_UTC);
     printf(CLEAR_SCREEN CURSOR_INVISIBLE);
     fflush(stdout);
-    while((c = fgetc(tui_file)) != EOF) {
+    
+    
+    while((c = fgetc(tui_file)) != EOF || do_loop) {
+        if (c == EOF && do_loop) {
+            rewind(tui_file);
+            c = fgetc(tui_file);
+        }
+
         if (read_sleep) {
             if (read_iter < 4) {
                 second_buf[read_iter] = c;
