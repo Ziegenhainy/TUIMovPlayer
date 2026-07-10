@@ -66,6 +66,7 @@ int main(int argc, char** argv) {
         if (c == EOF && do_loop) {
             rewind(tui_file);
             c = fgetc(tui_file);
+            printf(CLEAR_SCREEN CURSOR_INVISIBLE);
         }
 
         if (read_sleep) {
