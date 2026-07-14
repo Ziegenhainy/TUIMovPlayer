@@ -64,14 +64,15 @@ int main(int argc, char** argv) {
 
             read_iter++;
             if (read_iter==8) {
-                memcpy(&sleep_time.tv_sec, second_buf, sizeof(__time_t));
-                memcpy(&sleep_time.tv_nsec, nanos_buf, sizeof(__syscall_slong_t));
+                memcpy(&sleep_time.tv_sec, second_buf, sizeof(time_t));
+                memcpy(&sleep_time.tv_nsec, nanos_buf, sizeof(long));
                 read_sleep = false;
                 read_iter = 0;
                 timespec_add(&next_time, &sleep_time);
                 sleep_time = next_time;
                 timespec_get(&current_time, TIME_UTC);
                 timespec_diff(&sleep_time, &current_time);
+                printf("%lld, %ld\n", sleep_time.tv_sec, sleep_time.tv_nsec);
                 thrd_sleep(&sleep_time, NULL);
             }
             
