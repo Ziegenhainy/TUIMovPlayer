@@ -6,6 +6,9 @@
 #include <threads.h>
 #include <time.h>
 #include <string.h>
+#ifdef _MSC_VER
+    #include <locale.h>
+#endif
 
 void timespec_add(struct timespec* timespec1, struct timespec* timespec2) {
     timespec1->tv_nsec = timespec1->tv_nsec + timespec2->tv_nsec;
@@ -32,7 +35,9 @@ int main(int argc, char** argv) {
         puts("Please Provide a tuimov File!");
         return EXIT_FAILURE;
     }
-
+    #ifdef _MSC_VER
+        setlocale(LC_ALL, ".UTF8");
+    #endif
     bool do_loop = false;
 
     if (argc >= 3) {
