@@ -86,7 +86,6 @@ int main(int argc, char** argv) {
                 sleep_time = next_time;
                 timespec_get(&current_time, TIME_UTC);
                 timespec_diff(&sleep_time, &current_time);
-                printf("%lld, %ld\n", sleep_time.tv_sec, sleep_time.tv_nsec);
                 thrd_sleep(&sleep_time, NULL);
             }
             
