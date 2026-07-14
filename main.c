@@ -36,6 +36,8 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     #ifdef _MSC_VER
+        char buf[65536];
+        setvbuf(stdout, buf, _IOFBF, 65536);
         setlocale(LC_ALL, ".UTF8");
     #endif
     bool do_loop = false;
