@@ -49,9 +49,10 @@ int main(int argc, char** argv) {
     int exit_code = EXIT_FAILURE;
 
     char* tui_file_path = argv[1];
-    FILE* tui_file = fopen(tui_file_path, "rb");
+    FILE* tui_file;
+    errno_t error_code = fopen_s(&tui_file, tui_file_path, "rb");
 
-    if (tui_file == NULL) {
+    if (error_code) {
         puts("Could not open tuimov File!");
         return EXIT_FAILURE;
     }
