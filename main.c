@@ -30,6 +30,12 @@ void timespec_diff(struct timespec* timespec1, struct timespec* timespec2) {
     timespec1->tv_sec = timespec1->tv_sec - timespec2->tv_sec;
 }
 
+union time_onion {
+    long long_val;
+    time_t time_val;
+    unsigned char buf[8];
+};
+
 int main(int argc, char** argv) {
     if (argc == 1) {
         puts("Please Provide a tuimov File!");
@@ -58,8 +64,7 @@ int main(int argc, char** argv) {
     
     int c;
 
-    unsigned char second_buf[8] = {0};
-    unsigned char nanos_buf[8] = {0};
+    union time_onion time_onion;
     
     struct timespec sleep_time, current_time, next_time;
     timespec_get(&next_time, TIME_UTC);
@@ -77,11 +82,11 @@ int main(int argc, char** argv) {
         if (c == 0) {
             fflush(stdout);
 
-            fread(second_buf, 4, 1, tui_file);
-            fread(nanos_buf,  4, 1, tui_file);
+            fread(time_onion.buf, 4, 1, tui_file);
+            sleep_time.tv_sec = time_onion.time_val;
+            fread(time_onion.buf,  4, 1, tui_file);
+            sleep_time.tv_nsec = time_onion.long_val;
 
-            memcpy(&sleep_time.tv_sec, second_buf, sizeof(time_t));
-            memcpy(&sleep_time.tv_nsec, nanos_buf, sizeof(long));
             timespec_add(&next_time, &sleep_time);
             sleep_time = next_time;
             timespec_get(&current_time, TIME_UTC);
